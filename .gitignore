@@ -1,6 +1,7 @@
 # Custom
 cache
 geojsondata
+*.csv
 
 
 # Byte-compiled / optimized / DLL files
