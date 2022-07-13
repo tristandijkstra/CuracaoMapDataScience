@@ -2,6 +2,7 @@
 cache
 geojsondata
 *.csv
+*.xls
 
 
 # Byte-compiled / optimized / DLL files
