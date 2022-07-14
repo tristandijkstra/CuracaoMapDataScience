@@ -11,14 +11,6 @@ import geopandas as gpd
 
 # import pysal as ps
 from sklearn import cluster
-from sklearn.preprocessing import scale
-from scipy.sparse.csgraph import connected_components
-
-import shapely
-from shapely.geometry.polygon import Polygon
-import pyproj
-from functools import partial
-
 
 import plotly.express as px
 
@@ -42,11 +34,37 @@ def geojsonToGeopandas(listOfGeojson):
     return P
 
 
+def removeOverlap(P, verbose=True):
+    P = P.sort_values("area", ascending=False)
+    P = P.drop(["Piscadera Baai"])  # i like the alias veeris better
+    P = P.drop(["San Juan"])  # does not work automatically goes in pannekoek
+    duplicateBarios = []
+    for bario, row in P.iterrows():
+        for bario2, row2 in P.iterrows():
+            # skip if it comes across itself or finds a bigger bario
+            if (bario == bario2) or row2.area > row.area:
+                continue
+            # add alias barios for deletion
+            if (row2.area == row.area) and (bario not in duplicateBarios):
+                duplicateBarios.append(bario2)
+                continue
+            # delete smaller barios that are inside bario1
+            if row.geometry.contains(row2.geometry):
+                if verbose:
+                    print(bario, row.area, "<-", bario2, row2.area)
+                P = P.drop([bario2])
+
+    # remove aliased barios
+    P = P.drop(duplicateBarios)
+    return P
+
+
 def generateGeoJSON(
     areaID,
     forceRegenerate=False,
     save=True,
     saveFolder=r"geojsondata",
+    verbose=True
 ):
 
     if not os.path.exists(saveFolder) or forceRegenerate:
@@ -108,6 +126,10 @@ def generateGeoJSON(
                     geojson.dump(bario, file)
 
         P = geojsonToGeopandas(barios)
+        P.index = P.index.str.replace(" \(zone\)", "")#.strip()
+        P = removeOverlap(P, verbose=verbose)
+
+        # remove the word zone
 
         return P
 
@@ -121,6 +143,10 @@ def generateGeoJSON(
                 barios.append(geojson.load(file))
 
         P = geojsonToGeopandas(barios)
+        P.index = P.index.str.replace(" \(zone\)", "")#.strip()
+        P = removeOverlap(P, verbose=verbose)
+
+        # remove the word zone
 
         return P
 
@@ -129,27 +155,6 @@ if __name__ == "__main__":
     # Run and plot barios
 
     barios = generateGeoJSON(CuracaoID, forceRegenerate=False)
-
-    # remove overlap
-    barios = barios.sort_values("area", ascending=False)
-    barios = barios.drop(["Piscadera Baai"])  # i like the alias veeris better
-    barios = barios.drop(["San Juan"])  # does not work automatically goes in pannekoek
-    duplicateBarios = []
-    for bario, row in barios.iterrows():
-        for bario2, row2 in barios.iterrows():
-            # skip if it comes across itself or finds a bigger bario
-            if (bario == bario2) or row2.area > row.area:
-                continue
-            # add alias barios for deletion
-            if (row2.area == row.area) and (bario not in duplicateBarios):
-                duplicateBarios.append(bario2)
-                continue
-            # delete smaller barios that are inside bario1
-            if row.geometry.contains(row2.geometry):
-                print(bario, row.area, "<-", bario2, row2.area)
-                barios = barios.drop([bario2])
-    barios = barios.drop(duplicateBarios)
-    # end remove overlap
 
     model = cluster.KMeans(20)
     # print("hello")
