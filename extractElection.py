@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 import shapely
+import os
+from shapely import wkt
 
 from misc import parties2017, parties2021, parties2017Colours, parties2021Colours
 from extractmap import generateGeoJSON, CuracaoID, CuracaoCentre
@@ -82,8 +84,29 @@ def generateStemloketten(stemlokettenFile, electionFile, parties, year):
     bariosAGG = {
         **{party: "sum" for party in [*parties, "totalkiezers", "total"]},
         **{u: "first" for u in ["total", "area", "invarea", "lat", "lon"]},
+        **{"pctKiezers": "mean"},
     }
-    bariosYEAR = barios.sjoin(stemlokettenYEAR).dissolve("bario", aggfunc=bariosAGG)
+    bariosYEAR = (
+        barios.sjoin(stemlokettenYEAR)
+        .dissolve("bario", aggfunc=bariosAGG)
+        .drop_duplicates()
+    )
+
+    # Add back barios without stemloketten.
+    remainingBarios = [
+        x for x in barios.index.values if x not in bariosYEAR.index.values
+    ]
+    remainingBarios = list(set(remainingBarios))
+
+    bariosYEAR = pd.concat(
+        [
+            bariosYEAR,
+            barios.loc[remainingBarios, ["area", "invarea", "geometry", "lat", "lon"]]
+            .assign(bario=lambda x: x.index)
+            .dissolve("bario"),
+        ],
+        axis=0,
+    ).fillna(0)
 
     # Add bario data to stemloketten
     stemlokettenYEAR = stemlokettenYEAR.sjoin(barios).drop(
