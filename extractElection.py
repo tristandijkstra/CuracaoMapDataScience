@@ -31,10 +31,12 @@ def generateElectionDF(file: str, parties: list, year: int):
     for party in parties:
         if year == 2017:
             a = pd.read_excel(file, sheet_name=party, header=0).iloc[-3:-2, 2::]
-        elif year == 2021:
+        elif year in [2021, 2012]:
             a = pd.read_excel(file, sheet_name=party, header=0).iloc[-1::, 2::]
+        elif year in [2016, 2010]:
+            a = pd.read_excel(file, sheet_name=party, header=0).iloc[-1::, 1::]
         else:
-            raise ValueError("Only 2021 and 2017 elections are available.")
+            raise ValueError("Only 2010, 2012, 2016, 2017 and 2021 elections are available.")
         a.columns = [x.replace("sd: ", "") for x in a.columns]
         a.index = [party]
         a = a.transpose()

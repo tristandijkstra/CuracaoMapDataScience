@@ -40,7 +40,7 @@ parties2016 = [
     "PAS",
     "DP",
     "PAR",
-    "PK",
+    "PRO-K",
     "PS",
     "PNP",
 ]
@@ -81,7 +81,7 @@ parties2021Colours = {
     "DP":"red",
     "KUMUN":"orange",
     "MP":"magenta",
-    "PS":"beige",
+    "PS":"tan",
 }
 
 parties2017Colours = {
@@ -93,13 +93,13 @@ parties2017Colours = {
     "PNP":"green",
     "FOL-PAN":"orange",
     "MFK":"#FFF5EE",
-    "PS":"beige",
+    "PS":"tan",
     "MKP":"darkgrey",
     "MP":"magenta"
 }
 
 parties2016Colours = {
-    "MFK":"FFF5EE",
+    "MFK":"#FFF5EE",
     "MKP":"grey",
     "UKH":"purple",
     "MAN":"darkblue",
@@ -109,15 +109,15 @@ parties2016Colours = {
     "PAS":"orange",
     "DP":"red",
     "PAR":"yellow",
-    "PK":"brown",
-    "PS":"beige",
+    "PRO-K":"brown",
+    "PS":"tan",
     "PNP":"green",
 }
 
 parties2012Colours = {
-    "MFK":"FFF5EE",
+    "MFK":"#FFF5EE",
     "FOL":"orange",
-    "PS":"beige",
+    "PS":"tan",
     "MAN":"darkblue",
     "PAR":"yellow",
     "DP":"red",
@@ -126,7 +126,7 @@ parties2012Colours = {
 }
 
 parties2010Colours = {
-    "PS":"beige",
+    "PS":"tan",
     "PPE":"LightSeaGreen",
     "PNP":"green",
     "PAR":"yellow",

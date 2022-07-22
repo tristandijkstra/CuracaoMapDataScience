@@ -12,29 +12,58 @@ from dash import (
     Input,
     Output,
     State,
-)  # pip install dash (version 2.0.0 or higher)
+)
 
-# import pysal as ps
 from sklearn import cluster
-from sympy import O
 
 from extractmap import generateGeoJSON, CuracaoID, CuracaoCentre
 from extractElection import generateElectionMap
-from misc import parties2017, parties2021, parties2017Colours, parties2021Colours
+from misc import (
+    parties2010,
+    parties2012,
+    parties2016,
+    parties2017,
+    parties2021,
+    parties2010Colours,
+    parties2012Colours,
+    parties2016Colours,
+    parties2017Colours,
+    parties2021Colours,
+)
 
 
-electiondata2017 = r"elekshon2017.xls"
 electiondata2021 = r"elekshon2021.xls"
+electiondata2017 = r"elekshon2017.xls"
+electiondata2016 = r"elekshon2016.xls"
+electiondata2012 = r"elekshon2012.xls"
+electiondata2010 = r"elekshon2010.xls"
 
-stemlokettendata2017 = r"stemloketten2017.csv"
 stemlokettendata2021 = r"stemloketten2021.csv"
+stemlokettendata2017 = r"stemloketten2017.csv"
+stemlokettendata2016 = r"stemloketten2017.csv"
+stemlokettendata2012 = r"stemloketten2017.csv"
+stemlokettendata2010 = r"stemloketten2017.csv"
 
 
-electionFiles = {2017: electiondata2017, 2021: electiondata2021}
-stemlokettenFiles = {2017: stemlokettendata2017, 2021: stemlokettendata2021}
-partiesLists = {2017: parties2017, 2021: parties2021}
-partiesColoursDict = {2017: parties2017Colours, 2021: parties2021Colours}
-years = [2017, 2021]
+electionFiles = {2010: electiondata2010, 2012: electiondata2012, 2016: electiondata2016, 2017: electiondata2017, 2021: electiondata2021}
+
+stemlokettenFiles = {
+    2010: stemlokettendata2010,
+    2012: stemlokettendata2012,
+    2016: stemlokettendata2016,
+    2017: stemlokettendata2017,
+    2021: stemlokettendata2021,
+}
+partiesLists = {2010: parties2010, 2012: parties2012, 2016: parties2016, 2017: parties2017, 2021: parties2021}
+
+partiesColoursDict = {
+    2010: parties2010Colours,
+    2012: parties2012Colours,
+    2016: parties2016Colours,
+    2017: parties2017Colours,
+    2021: parties2021Colours,
+}
+years = [2010, 2012, 2016, 2017, 2021]
 
 stemlokettenDict, bariosDict, totalsDataDict = generateElectionMap(
     electionFiles, stemlokettenFiles, partiesLists, years
@@ -51,7 +80,7 @@ app.layout = html.Div(
             id="control",
             children=[
                 html.Div(
-                    id="bbbb",
+                    id="dddiv1",
                     style={
                         "display": "inline-block",
                         "width": "10%",
@@ -64,15 +93,20 @@ app.layout = html.Div(
                             options=[
                                 {"label": "2021", "value": 2021},
                                 {"label": "2017", "value": 2017},
+                                {"label": "2016 (beta)", "value": 2016},
+                                {"label": "2012 (beta)", "value": 2012},
+                                {"label": "2010 (beta)", "value": 2010},
                             ],
                             multi=False,
                             value=2021,
+                            searchable=False,
+                            clearable=False,
                             placeholder="Select a year",
                         ),
                     ],
                 ),
                 html.Div(
-                    id="ccc",
+                    id="dddiv2",
                     style={
                         "display": "inline-block",
                         "width": "15%",
@@ -88,12 +122,14 @@ app.layout = html.Div(
                             ],
                             multi=False,
                             value=False,
+                            searchable=False,
+                            clearable=False,
                             placeholder="on/off",
                         ),
                     ],
                 ),
                 html.Div(
-                    id="aaaa",
+                    id="dddiv3",
                     style={
                         "display": "inline-block",
                         "width": "10%",
@@ -111,12 +147,14 @@ app.layout = html.Div(
                             ],
                             placeholder="Select a year",
                             multi=False,
+                            searchable=False,
+                            clearable=False,
                             value=0,
                         ),
                     ],
                 ),
                 html.Div(
-                    id="ddd",
+                    id="dddiv4",
                     style={
                         "display": "inline-block",
                         "width": "15%",
@@ -132,6 +170,8 @@ app.layout = html.Div(
                             ],
                             placeholder="Number representation",
                             multi=False,
+                            searchable=False,
+                            clearable=False,
                             value="Numbers",
                         ),
                     ],
@@ -145,7 +185,7 @@ app.layout = html.Div(
                 dcc.Graph(
                     id="map",
                     figure={},
-                    style={"display": "inline-block", "width": "68%", "height": "85vh"},
+                    style={"display": "inline-block", "width": "68%", "height": "89vh"},
                 ),
                 html.Div(
                     id="barcontainer",
@@ -157,7 +197,7 @@ app.layout = html.Div(
                             style={
                                 "display": "inline-block",
                                 "width": "100%",
-                                "height": "85vh",
+                                "height": "89vh",
                             },
                         )
                     ],
@@ -186,7 +226,6 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
     otheryear = years[::]
     otheryear.remove(int(yearDD))
     otheryear = int(otheryear[0])
-
 
     bariosDictFinal = {}
     # mapclicks = None
@@ -288,7 +327,7 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
         barlocation = "Total"
 
     stemlok = stemlokettenDict[yearDD]
-    
+
     if NumberStyleDD == "Percentage":
         stemlok.loc[:, partiesLists[yearDD]] = (
             stemlok.loc[:, partiesLists[yearDD]]
@@ -305,7 +344,7 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
         color="winner",
         color_discrete_map=partiesColoursDict[yearDD],
         mapbox_style="carto-positron",
-        zoom=9,
+        zoom=9.8,
         center={"lat": CuracaoCentre[0], "lon": CuracaoCentre[1]},
         opacity=1,
     )
@@ -354,7 +393,6 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
     totalbar[otheryear] = totalsDataDict[otheryear]
     totalbar = totalbar.fillna(0)
 
-
     colstemp = totalbar.columns.difference(["party"])
 
     if barmode == "bario":
@@ -365,8 +403,8 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
         bardf = totalbar
 
     if NumberStyleDD == "Percentage":
-        bardf.loc[:,colstemp] = (
-            bardf.loc[:,colstemp]
+        bardf.loc[:, colstemp] = (
+            bardf.loc[:, colstemp]
             .div(bardf[colstemp].sum(), axis=1)
             .multiply(100, axis=1)
             .round(1)
