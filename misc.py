@@ -58,7 +58,7 @@ parties2021Colours = {
     "MKP":"darkgrey",
     "DP":"red",
     "KUMUN":"orange",
-    "Hustu":"purple",
+    # "Hustu":"purple",
     "MP":"magenta",
     "PS":"beige",
 }
