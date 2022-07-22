@@ -12,7 +12,21 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 
-def generateElectionDF(file, parties, year):
+def generateElectionDF(file: str, parties: list, year: int):
+    """generate election dataframes from KSE xls data
+
+    Args:
+        file (str): path to xls file from KSE.
+        parties (list): list of parties participating in election.
+        year (int): year of election.
+
+    Raises:
+        ValueError: Years other than 2017 or 2021 not implemented.
+
+    Returns:
+        total: short DF with the total votes for each party.
+        election data: DF with voting hall (stemloket) on y and parties on x.
+    """
     P = pd.DataFrame()
     for party in parties:
         if year == 2017:
@@ -35,8 +49,22 @@ def generateElectionDF(file, parties, year):
     return totaal, P
 
 
-def generateStemloketten(stemlokettenFile, electionFile, parties, year):
+def generateStemloketten(
+    stemlokettenFile: str, electionFile: str, parties: list, year: int
+):
+    """enerate stemloketten DF file
 
+    Args:
+        stemlokettenFile (str): file path to stemloketten file.
+        electionFile (str): file path to election file from KSE.
+        parties (list): list of parties names participating in election.
+        year (int): year of election.
+
+    Returns:
+        pd.Dataframe: Dataframe with stemlokketten data, election results, and district(bario) data.
+        pd.Dataframe: Dataframe with barios data with election results.
+        pd.Dataframe: Dataframe with party total votes for year.
+    """
     stemlokettenYEAR = (
         pd.read_csv(stemlokettenFile, index_col=0)
         .reset_index(drop=True)
@@ -123,17 +151,36 @@ def generateStemloketten(stemlokettenFile, electionFile, parties, year):
 
 
 def generateElectionMap(
-    electionFiles: dict, StemlokettenFiles: dict, partiesLists: dict, years: list
+    electionFiles: dict,
+    stemlokettenFiles: dict,
+    partiesLists: dict,
+    years: list,
+    forceRegen=False,
+    saveFolder="processed",
 ):
+    """Generate election data for multiple years in dict format
+
+    Args:
+        electionFiles (dict): dictionary with file paths to election xls' from KSE
+        stemlokettenFiles (dict): dictionary with file paths to stemloketten data
+        partiesLists (dict): list of lists of parties participating in elections
+
+        years (list): list of int years
+
+    Returns:
+        dict: Dictionary with Dataframes with stemlokketten data, election results, and district(bario) data.
+        dict: Dictionary with Dataframes with barios data with election results.
+        dict: Dictionary with Dataframes with party total votes for year.
+    """
     stemlokettenDict = {}
     bariosDict = {}
     totalsDataDict = {}
     if not os.path.exists(saveFolder) or forceRegen:
         os.makedirs(saveFolder)
-    for year in years:
-        stemlokettenYEAR, bariosYEAR, totalelectionYEAR = generateStemloketten(
+        for year in years:
+            stemlokettenYEAR, bariosYEAR, totalelectionYEAR = generateStemloketten(
                 stemlokettenFiles[year], electionFiles[year], partiesLists[year], year
-        )
+            )
             stemlokettenYEAR = stemlokettenYEAR[
                 ~stemlokettenYEAR.index.duplicated(keep="first")
             ]
@@ -141,9 +188,9 @@ def generateElectionMap(
             bariosYEAR = bariosYEAR.rename_axis(None)
             bariosYEAR = bariosYEAR.assign(bario= lambda x: x.index)
 
-        stemlokettenDict[year] = stemlokettenYEAR
-        bariosDict[year] = bariosYEAR
-        totalsDataDict[year] = totalelectionYEAR
+            stemlokettenDict[year] = stemlokettenYEAR
+            bariosDict[year] = bariosYEAR
+            totalsDataDict[year] = totalelectionYEAR
 
             stemlokettenYEAR.to_csv(f"{saveFolder}/stemloketten_{year}.csv")
             bariosYEAR.to_csv(f"{saveFolder}/barios_{year}.csv")
