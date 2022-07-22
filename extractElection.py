@@ -105,15 +105,38 @@ def generateElectionMap(
     stemlokettenDict = {}
     bariosDict = {}
     totalsDataDict = {}
-
+    if not os.path.exists(saveFolder) or forceRegen:
+        os.makedirs(saveFolder)
     for year in years:
         stemlokettenYEAR, bariosYEAR, totalelectionYEAR = generateStemloketten(
-            StemlokettenFiles[year], electionFiles[year], partiesLists[year], year
+                stemlokettenFiles[year], electionFiles[year], partiesLists[year], year
         )
+            stemlokettenYEAR = stemlokettenYEAR[
+                ~stemlokettenYEAR.index.duplicated(keep="first")
+            ]
+
+            bariosYEAR = bariosYEAR.rename_axis(None)
+            bariosYEAR = bariosYEAR.assign(bario= lambda x: x.index)
 
         stemlokettenDict[year] = stemlokettenYEAR
         bariosDict[year] = bariosYEAR
         totalsDataDict[year] = totalelectionYEAR
+
+            stemlokettenYEAR.to_csv(f"{saveFolder}/stemloketten_{year}.csv")
+            bariosYEAR.to_csv(f"{saveFolder}/barios_{year}.csv")
+            totalelectionYEAR.to_csv(f"{saveFolder}/totalelection_{year}.csv")
+    else:
+        for year in years:
+            a = pd.read_csv(f"{saveFolder}/stemloketten_{year}.csv", index_col=0)
+            a.geometry = a.geometry.apply(wkt.loads)
+            b = pd.read_csv(f"{saveFolder}/barios_{year}.csv", index_col=0)
+            b.geometry = b.geometry.apply(wkt.loads)
+            c = pd.read_csv(
+                f"{saveFolder}/totalelection_{year}.csv", index_col=0, squeeze=True
+            )
+            stemlokettenDict[year] = gpd.GeoDataFrame(a, geometry="geometry")
+            bariosDict[year] = gpd.GeoDataFrame(b, geometry="geometry")
+            totalsDataDict[year] = c
 
     return stemlokettenDict, bariosDict, totalsDataDict
 
