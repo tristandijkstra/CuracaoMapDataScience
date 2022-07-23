@@ -7,9 +7,9 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 
-COPY ./geojsondata ./geojsondata
+# COPY ./geojsondata ./geojsondata
 COPY ./processed ./processed
-COPY ./rawdata ./rawdata
+# COPY ./rawdata ./rawdata
 COPY ./assets ./assets
 
 
