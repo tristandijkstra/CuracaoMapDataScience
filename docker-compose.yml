@@ -3,4 +3,4 @@ services:
   electiondash:
     build: .
     ports:
-      - "1000:8050"
+      - "80:80"

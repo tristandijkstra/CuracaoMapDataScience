@@ -1,6 +1,7 @@
 from OSMPythonTools.nominatim import Nominatim
 import pandas as pd
 import shapely
+import flask
 
 import geopandas as gpd
 import plotly.express as px
@@ -70,8 +71,8 @@ stemlokettenDict, bariosDict, totalsDataDict = generateElectionMap(
 )
 
 # externalscr
-
-app = Dash(__name__, external_scripts=["https://cdn.tailwindcss.com", "election.css"])
+app = flask.Flask(__name__)
+dashApp = Dash(__name__, server=app, external_scripts=["https://cdn.tailwindcss.com", "election.css"])
 
 # Layout
 app.layout = html.Div(
@@ -459,4 +460,4 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port = 8050)
+    app.run_server(host = '0.0.0.0', debug=True, port = 80)

@@ -19,7 +19,7 @@ COPY extractmap.py .
 COPY misc.py .
 
 
-EXPOSE 8050
+EXPOSE 80
 
 
 CMD ["python", "electiondashboard.py"]
