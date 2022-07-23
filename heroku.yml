@@ -1,9 +1,9 @@
 build:
   docker:
     web: Dockerfile
-release:
-  command:
-    - ./gunicorn_start.sh
-run:
-  command:
-    - ./gunicorn_start.sh
+# release:
+#   command:
+#     - ./gunicorn_start.sh
+# run:
+#   command:
+#     - ./gunicorn_start.sh
