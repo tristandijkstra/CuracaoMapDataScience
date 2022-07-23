@@ -3,4 +3,4 @@ build:
     web: Dockerfile
 run:
   command:
-    - ./gunicorn_start.sh
+    - "./gunicorn_start.sh"
