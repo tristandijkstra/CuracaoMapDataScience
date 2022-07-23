@@ -32,17 +32,17 @@ from misc import (
 )
 
 
-electiondata2021 = r"elekshon2021.xls"
-electiondata2017 = r"elekshon2017.xls"
-electiondata2016 = r"elekshon2016.xls"
-electiondata2012 = r"elekshon2012.xls"
-electiondata2010 = r"elekshon2010.xls"
+electiondata2021 = r"rawdata/elekshon2021.xls"
+electiondata2017 = r"rawdata/elekshon2017.xls"
+electiondata2016 = r"rawdata/elekshon2016.xls"
+electiondata2012 = r"rawdata/elekshon2012.xls"
+electiondata2010 = r"rawdata/elekshon2010.xls"
 
-stemlokettendata2021 = r"stemloketten2021.csv"
-stemlokettendata2017 = r"stemloketten2017.csv"
-stemlokettendata2016 = r"stemloketten2017.csv"
-stemlokettendata2012 = r"stemloketten2017.csv"
-stemlokettendata2010 = r"stemloketten2017.csv"
+stemlokettendata2021 = r"rawdata/stemloketten2021.csv"
+stemlokettendata2017 = r"rawdata/stemloketten2017.csv"
+stemlokettendata2016 = r"rawdata/stemloketten2017.csv"
+stemlokettendata2012 = r"rawdata/stemloketten2017.csv"
+stemlokettendata2010 = r"rawdata/stemloketten2017.csv"
 
 
 electionFiles = {2010: electiondata2010, 2012: electiondata2012, 2016: electiondata2016, 2017: electiondata2017, 2021: electiondata2021}
@@ -71,16 +71,18 @@ stemlokettenDict, bariosDict, totalsDataDict = generateElectionMap(
 
 # externalscr
 
-app = Dash(__name__, external_scripts=["https://cdn.tailwindcss.com"])
+app = Dash(__name__, external_scripts=["https://cdn.tailwindcss.com", "election.css"])
 
 # Layout
 app.layout = html.Div(
     children=[
         html.Div(
             id="control",
+            className="controlbar",
             children=[
                 html.Div(
                     id="dddiv1",
+                    className="dropdown",
                     style={
                         "display": "inline-block",
                         "width": "10%",
@@ -107,6 +109,7 @@ app.layout = html.Div(
                 ),
                 html.Div(
                     id="dddiv2",
+                    className="dropdown",
                     style={
                         "display": "inline-block",
                         "width": "15%",
@@ -130,6 +133,7 @@ app.layout = html.Div(
                 ),
                 html.Div(
                     id="dddiv3",
+                    className="dropdown",
                     style={
                         "display": "inline-block",
                         "width": "10%",
@@ -155,6 +159,7 @@ app.layout = html.Div(
                 ),
                 html.Div(
                     id="dddiv4",
+                    className="dropdown",
                     style={
                         "display": "inline-block",
                         "width": "15%",
@@ -454,4 +459,4 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=True, port = 8050)
