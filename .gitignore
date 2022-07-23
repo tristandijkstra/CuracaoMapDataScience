@@ -4,6 +4,7 @@ geojsondata
 *.csv
 *.xls
 *bejaarden*
+!processed/*
 
 
 # Byte-compiled / optimized / DLL files
