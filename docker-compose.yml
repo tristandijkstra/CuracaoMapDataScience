@@ -1,0 +1,6 @@
+version: "3.8"
+services:
+  electiondash:
+    build: .
+    ports:
+      - "1000:8050"
