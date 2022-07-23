@@ -17,9 +17,11 @@ COPY electiondashboard.py .
 COPY extractElection.py .
 COPY extractmap.py .
 COPY misc.py .
+COPY gunicorn_start.sh .
 
 
 EXPOSE 80
 
 
-CMD ["python", "electiondashboard.py"]
+# CMD ["gunicorn"  , "-b", "0.0.0.0:8000", "electiondashboard:flapp"]
+ENTRYPOINT ["./gunicorn_start.sh"]

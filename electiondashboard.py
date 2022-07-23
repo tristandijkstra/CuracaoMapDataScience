@@ -71,8 +71,8 @@ stemlokettenDict, bariosDict, totalsDataDict = generateElectionMap(
 )
 
 # externalscr
-app = flask.Flask(__name__)
-dashApp = Dash(__name__, server=app, external_scripts=["https://cdn.tailwindcss.com", "election.css"])
+flapp = flask.Flask(__name__)
+app = Dash(__name__, server=flapp, external_scripts=["https://cdn.tailwindcss.com", "election.css"])
 
 # Layout
 app.layout = html.Div(
@@ -459,5 +459,5 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
     return fig, barFinal
 
 
-if __name__ == "__main__":
-    app.run_server(host = '0.0.0.0', debug=True, port = 80)
+# if __name__ == "__main__":
+#     app.run_server(host = '0.0.0.0', debug=True, port = 80)
