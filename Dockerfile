@@ -24,4 +24,5 @@ EXPOSE 80
 
 
 # CMD ["gunicorn"  , "-b", "0.0.0.0:8000", "electiondashboard:flapp"]
-ENTRYPOINT ["./gunicorn_start.sh"]
+# ENTRYPOINT ["./gunicorn_start.sh"]
+CMD ["bash", "./gunicorn_start.sh"]
