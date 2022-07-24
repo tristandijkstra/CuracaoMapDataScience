@@ -26,4 +26,4 @@ COPY gunicorn_start.sh .
 # CMD ["gunicorn"  , "-b", "0.0.0.0:8000", "electiondashboard:flapp"]
 # ENTRYPOINT ["./gunicorn_start.sh"]
 # CMD ["bash", "./gunicorn_start.sh"]
-CMD gunicorn electiondashboard:app --bind 0.0.0.0:$PORT
+CMD gunicorn electiondashboard:flapp --bind 0.0.0.0:$PORT
