@@ -20,9 +20,10 @@ COPY misc.py .
 COPY gunicorn_start.sh .
 
 
-EXPOSE 8000
+# EXPOSE 8000
 
 
 # CMD ["gunicorn"  , "-b", "0.0.0.0:8000", "electiondashboard:flapp"]
 # ENTRYPOINT ["./gunicorn_start.sh"]
-CMD ["bash", "./gunicorn_start.sh"]
+# CMD ["bash", "./gunicorn_start.sh"]
+CMD gunicorn electiondashboard:app --bind 0.0.0.0:$PORT
