@@ -14,6 +14,7 @@ COPY ./assets ./assets
 
 
 COPY electiondashboard.py .
+COPY mapboxmisc.py .
 COPY extractElection.py .
 COPY extractmap.py .
 COPY misc.py .
