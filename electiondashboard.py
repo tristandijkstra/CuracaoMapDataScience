@@ -1,7 +1,10 @@
+from pydoc import classname
 from OSMPythonTools.nominatim import Nominatim
 import pandas as pd
 import shapely
 import flask
+
+from mapboxmisc import mapboxstyle
 
 import geopandas as gpd
 import plotly.express as px
@@ -46,7 +49,13 @@ stemlokettendata2012 = r"rawdata/stemloketten2017.csv"
 stemlokettendata2010 = r"rawdata/stemloketten2017.csv"
 
 
-electionFiles = {2010: electiondata2010, 2012: electiondata2012, 2016: electiondata2016, 2017: electiondata2017, 2021: electiondata2021}
+electionFiles = {
+    2010: electiondata2010,
+    2012: electiondata2012,
+    2016: electiondata2016,
+    2017: electiondata2017,
+    2021: electiondata2021,
+}
 
 stemlokettenFiles = {
     2010: stemlokettendata2010,
@@ -55,7 +64,13 @@ stemlokettenFiles = {
     2017: stemlokettendata2017,
     2021: stemlokettendata2021,
 }
-partiesLists = {2010: parties2010, 2012: parties2012, 2016: parties2016, 2017: parties2017, 2021: parties2021}
+partiesLists = {
+    2010: parties2010,
+    2012: parties2012,
+    2016: parties2016,
+    2017: parties2017,
+    2021: parties2021,
+}
 
 partiesColoursDict = {
     2010: parties2010Colours,
@@ -70,155 +85,159 @@ stemlokettenDict, bariosDict, totalsDataDict = generateElectionMap(
     electionFiles, stemlokettenFiles, partiesLists, years
 )
 
-# externalscr
+external_scripts = [
+    #   "https://cdn.tailwindcss.com",
+    "election.css"
+]
 flapp = flask.Flask(__name__)
-app = Dash(__name__, server=flapp, external_scripts=["https://cdn.tailwindcss.com", "election.css"])
+app = Dash(__name__, server=flapp, external_scripts=external_scripts)
 
 # Layout
 app.layout = html.Div(
+    className="appPage",
     children=[
+        html.Div(id="fullscreenloader"),
         html.Div(
             id="control",
             className="controlbar",
             children=[
                 html.Div(
-                    id="dddiv1",
-                    className="dropdown",
-                    style={
-                        "display": "inline-block",
-                        "width": "10%",
-                        "margin-left": "20px",
-                    },
+                    id="info",
+                    className="infobar",
                     children=[
-                        "Election Year:",
-                        dcc.Dropdown(
-                            id="yearDD",
-                            options=[
-                                {"label": "2021", "value": 2021},
-                                {"label": "2017", "value": 2017},
-                                {"label": "2016 (beta)", "value": 2016},
-                                {"label": "2012 (beta)", "value": 2012},
-                                {"label": "2010 (beta)", "value": 2010},
-                            ],
-                            multi=False,
-                            value=2021,
-                            searchable=False,
-                            clearable=False,
-                            placeholder="Select a year",
-                        ),
+                        # dcc.Loading(id="loadingbar"),
+                        # html.Div(className="loaderParent", children=html.Div(className="loader")),
+                        html.Div("About", className="infobarItem"),
+                        html.Div("Seats", className="infobarItem"),
+                        html.Div("Disclaimer", className="infobarItem"),
                     ],
                 ),
                 html.Div(
-                    id="dddiv2",
-                    className="dropdown",
-                    style={
-                        "display": "inline-block",
-                        "width": "15%",
-                        "margin-left": "20px",
-                    },
+                    # id="dropdowns",
+                    className="dropdowns",
                     children=[
-                        "Comparative Bar Chart:",
-                        dcc.Dropdown(
-                            id="comparativeCL",
-                            options=[
-                                {"label": "On", "value": True},
-                                {"label": "Off", "value": False},
+                        html.Div(
+                            id="dddiv1",
+                            className="dropdown",
+                            children=[
+                                html.P("Election Year:"),
+                                dcc.Dropdown(
+                                    id="yearDD",
+                                    options=[
+                                        {"label": "2021", "value": 2021},
+                                        {"label": "2017", "value": 2017},
+                                        {"label": "2016 (beta)", "value": 2016},
+                                        {"label": "2012 (beta)", "value": 2012},
+                                        {"label": "2010 (beta)", "value": 2010},
+                                    ],
+                                    multi=False,
+                                    value=2021,
+                                    searchable=False,
+                                    clearable=False,
+                                    placeholder="Select a year",
+                                ),
                             ],
-                            multi=False,
-                            value=False,
-                            searchable=False,
-                            clearable=False,
-                            placeholder="on/off",
+                        ),
+                        html.Div(
+                            id="dddiv2",
+                            className="dropdown",
+                            children=[
+                                html.P("Bar Chart:"),
+                                dcc.Dropdown(
+                                    id="comparativeCL",
+                                    options=[
+                                        {"label": "Off", "value": "off"},
+                                        {"label": "Simple", "value": "simple"},
+                                        {
+                                            "label": "Comparative",
+                                            "value": "comparative",
+                                        },
+                                    ],
+                                    multi=False,
+                                    value="simple",
+                                    searchable=False,
+                                    clearable=False,
+                                    placeholder="on/off",
+                                ),
+                            ],
+                        ),
+                        html.Div(
+                            id="dddiv3",
+                            className="dropdown",
+                            children=[
+                                html.P("Clustering:"),
+                                dcc.Dropdown(
+                                    id="clustersDD",
+                                    options=[
+                                        {"label": "No Clustering", "value": 0},
+                                        {"label": "3 clusters", "value": 3},
+                                        {"label": "5 clusters", "value": 5},
+                                        {"label": "10 clusters", "value": 10},
+                                        {"label": "15 clusters", "value": 15},
+                                    ],
+                                    placeholder="Select a year",
+                                    multi=False,
+                                    searchable=False,
+                                    clearable=False,
+                                    value=0,
+                                ),
+                            ],
+                        ),
+                        html.Div(
+                            id="dddiv4",
+                            className="dropdown",
+                            children=[
+                                html.P("Representation:"),
+                                dcc.Dropdown(
+                                    id="NumberStyleDD",
+                                    options=[
+                                        {
+                                            "label": "Number of Voters",
+                                            "value": "Numbers",
+                                        },
+                                        {"label": "Percentage", "value": "Percentage"},
+                                    ],
+                                    placeholder="Number representation",
+                                    multi=False,
+                                    searchable=False,
+                                    clearable=False,
+                                    value="Percentage",
+                                ),
+                            ],
                         ),
                     ],
                 ),
-                html.Div(
-                    id="dddiv3",
-                    className="dropdown",
-                    style={
-                        "display": "inline-block",
-                        "width": "10%",
-                        "margin-left": "20px",
-                    },
-                    children=[
-                        "Clustering:",
-                        dcc.Dropdown(
-                            id="clustersDD",
-                            options=[
-                                {"label": "No Clustering", "value": 0},
-                                {"label": "3", "value": 3},
-                                {"label": "5", "value": 5},
-                                {"label": "10", "value": 10},
-                            ],
-                            placeholder="Select a year",
-                            multi=False,
-                            searchable=False,
-                            clearable=False,
-                            value=0,
-                        ),
-                    ],
-                ),
-                html.Div(
-                    id="dddiv4",
-                    className="dropdown",
-                    style={
-                        "display": "inline-block",
-                        "width": "15%",
-                        "margin-left": "20px",
-                    },
-                    children=[
-                        "Number representation:",
-                        dcc.Dropdown(
-                            id="NumberStyleDD",
-                            options=[
-                                {"label": "Number of Voters", "value": "Numbers"},
-                                {"label": "Percentage", "value": "Percentage"},
-                            ],
-                            placeholder="Number representation",
-                            multi=False,
-                            searchable=False,
-                            clearable=False,
-                            value="Numbers",
-                        ),
-                    ],
-                ),
-                html.Hr(),
             ],
         ),
         html.Div(
             id="graphs",
+            className="graphs",
             children=[
                 dcc.Graph(
                     id="map",
                     figure={},
-                    style={"display": "inline-block", "width": "68%", "height": "89vh"},
+                    # style={"display": "inline-block", "width": "68%", "height": "89vh"},
                 ),
                 html.Div(
                     id="barcontainer",
-                    style={"display": "inline-block", "width": "30%", "height": "85vh"},
                     children=[
                         dcc.Graph(
                             id="bar",
                             figure={},
-                            style={
-                                "display": "inline-block",
-                                "width": "100%",
-                                "height": "89vh",
-                            },
                         )
                     ],
                 ),
-                # dcc.Graph(id='bar', figure={})
             ],
         ),
-    ]
+    ],
 )
-
 
 @app.callback(
     [
         Output(component_id="map", component_property="figure"),
         Output(component_id="bar", component_property="figure"),
+        Output(component_id="barcontainer", component_property="className"),
+        Output(component_id="fullscreenloader", component_property="className"),
     ],
     [
         Input(component_id="clustersDD", component_property="value"),
@@ -349,8 +368,7 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
         hover_name="name",
         color="winner",
         color_discrete_map=partiesColoursDict[yearDD],
-        mapbox_style="carto-positron",
-        zoom=9.8,
+        zoom=10.1,
         center={"lat": CuracaoCentre[0], "lon": CuracaoCentre[1]},
         opacity=1,
     )
@@ -385,10 +403,8 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
         hover_name=chloro.bario,
         color=chloro.winner,
         color_discrete_map=partiesColoursDict[yearDD],
-        mapbox_style="carto-positron",
-        zoom=9,
         center={"lat": CuracaoCentre[0], "lon": CuracaoCentre[1]},
-        opacity=0.5,
+        opacity=0.7,
     )
 
     totalbar = (
@@ -440,14 +456,22 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
     barcomp.update_layout(
         legend=dict(title="", yanchor="top", y=0.99, xanchor="right", x=0.99)
     )
+    fig.update_layout(
+        legend=dict(title="Party", yanchor="top", y=0.99, xanchor="right", x=0.99)
+    )
 
-    bar.update_layout(showlegend=False)
-    if comparativeCL:
+    if comparativeCL == "comparative":
         barFinal = barcomp
+        barclass = ""
+    elif comparativeCL == "simple":
+        barFinal = bar
+        barclass = ""
     else:
         barFinal = bar
+        barclass = "displayNone"
 
-    barFinal.update_xaxes(title="")
+    barFinal.update_xaxes(tickangle=45, title="")
+    barFinal.update_yaxes(showgrid=False, gridwidth=1, gridcolor="black")
 
     if NumberStyleDD == "Percentage":
         barFinal.update_yaxes(title="Voters (%)")
@@ -456,8 +480,27 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
 
     barFinal.update_traces(marker_line_color="DarkSlateGrey", marker_line_width=0.5)
 
-    return fig, barFinal
+    fig.update_layout(
+        autosize=False,
+        margin=dict(l=0, r=0, b=0, t=0, pad=0),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        mapbox=mapboxstyle,
+        font=dict(color="#fff"),
+        font_family="monospace",
+    )
+    barFinal.update_layout(
+        autosize=False,
+        margin=dict(l=0, r=0, b=0, t=40, pad=0),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#fff"),
+        showlegend=False,
+        font_family="monospace",
+    )
+
+    return fig, barFinal, barclass, "displayNone"
 
 
-# if __name__ == "__main__":
-#     app.run_server(host = '0.0.0.0', debug=True, port = 80)
+if __name__ == "__main__":
+    app.run_server(debug=True, port=8000)
