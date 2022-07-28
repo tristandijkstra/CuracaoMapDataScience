@@ -96,7 +96,7 @@ app = Dash(__name__, server=flapp, external_scripts=external_scripts)
 app.layout = html.Div(
     className="appPage",
     children=[
-        html.Div(id="fullscreenloader"),
+        html.Div(id="fullscreenloader", children=["Loading Election Map"]),
         html.Div(
             id="control",
             className="controlbar",
@@ -216,7 +216,6 @@ app.layout = html.Div(
                 dcc.Graph(
                     id="map",
                     figure={},
-                    # style={"display": "inline-block", "width": "68%", "height": "89vh"},
                 ),
                 html.Div(
                     id="barcontainer",

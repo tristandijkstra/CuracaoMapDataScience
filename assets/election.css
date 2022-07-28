@@ -204,26 +204,32 @@ body {
 
 #fullscreenloader{
   position: absolute;
-  display:inline-block;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  color: var(--textAccent);
   z-index: 10;
   height: calc(100vh - 2*var(--defaultmargin));
   width: calc(100vw - 2*var(--defaultmargin));
   background-color: var(--background);
+
 }
 
-
 ._dash-loading {
+  /* display: none; */
+  opacity: 0;
+}
+
+/* ._dash-loading {
   margin: auto;
   content: 'Loading Election Dashboard';
   color: var(--textAccent);
   font-size: 48px;
-  /* color: transparent; */
-  /* width: 0; */
-  /* height: 0; */
   width: 100%;
   height: 100%;
   text-align: center;
-}
+} */
 
 /* *[data-dash-is-loading="true"] {
     opacity: 0;
