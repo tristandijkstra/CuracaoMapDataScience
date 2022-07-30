@@ -11,9 +11,11 @@ RUN pip install -r requirements.txt
 COPY ./processed ./processed
 # COPY ./rawdata ./rawdata
 COPY ./assets ./assets
+COPY ./pages ./pages
 
 
 COPY electiondashboard.py .
+# COPY electionlayout.py .
 COPY mapboxmisc.py .
 COPY extractElection.py .
 COPY extractmap.py .

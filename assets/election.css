@@ -4,24 +4,22 @@
     --background2: #4a6f69;
     --background2: #4a6f69;
     --accent: #000;
-    --accent2: #f64740;
+    /* --accent2: #f64740; */
+    --accent2: #16DB65;
+    /* --accent2: #FFA62B; */
     --accent3: #d7263d;
     --textAccent: #ffffff;
-    /* --accent: #B0BBBF; */
     --borderthickness: 1px;
     --defaultmargin: 20px;
     --innermargin: 10px;
-    /* --shadow: 7px 6px 10px -6px #000000 */
+    --fontfam: monospace
 }
 
 body {
-    /* background: #d4dadc; */
-    /* background: #74a4b4; */
     background: #f2e9e4;
     background: var(--background);
     margin: 0;
     padding: 0;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     font-family: monospace;
     font-size: 15px;
 }
@@ -69,9 +67,14 @@ body {
     padding-right: 20px;
     cursor: pointer;
     transition: background 0.2s ease-in;
+    border: none;
+    background: none;
+    color: var(--textAccent);
+    text-decoration: none;
     /* margin-top: var(--innermargin); */
     /* margin-bottom: var(--innermargin); */
 }
+
 
 .infobarItem:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -84,10 +87,6 @@ body {
     gap: 20px;
     flex-direction: row;
     justify-content: end;
-    /* border: var(--borderthickness) solid var(--accent); */
-    /* box-shadow: var(--shadow); */
-    /* margin: var(--defaultmargin); */
-    /* margin-bottom: 0; */
 }
 
 .controlbar > h1 {
@@ -124,8 +123,6 @@ body {
 }
 
 .displayNone {
-    /* display: ;
-   */
     display: none !important;
 }
 
@@ -202,46 +199,42 @@ body {
     border-radius: calc(50px);
 }
 
-#fullscreenloader{
-  position: absolute;
-  display:flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
-  color: var(--textAccent);
-  z-index: 10;
-  height: calc(100vh - 2*var(--defaultmargin));
-  width: calc(100vw - 2*var(--defaultmargin));
-  background-color: var(--background);
-
+#fullscreenloader {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    color: var(--textAccent);
+    z-index: 10;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--background);
 }
 
 ._dash-loading {
-  /* display: none; */
-  opacity: 0;
+    opacity: 0;
 }
 
-/* ._dash-loading {
-  margin: auto;
-  content: 'Loading Election Dashboard';
-  color: var(--textAccent);
-  font-size: 48px;
-  width: 100%;
-  height: 100%;
-  text-align: center;
+/* #about {
+    position: absolute;
+    z-index: 10;
+    background: var(--background);
+    height: 100vh;
+    width: 100vw;
+    display: none;
 } */
 
-/* *[data-dash-is-loading="true"] {
-    opacity: 0;
-
-} */
-
-/* ._dash-loading {
-
-  position: absolute;
-  display: inline;
-  height: 100vh;
-  width: 100vw;
-  font-size: 100px;
-  color: var(--textAccent);
-} */
+.copyrightbar {
+    background: var(--background2);
+    color: var(--textAccent);
+    padding-right: var(--innermargin);
+    font-weight: bold;
+    font-size: 14px;
+    /* height: 73px; */
+    /* max-height: 73px; */
+    padding: 5px;
+    display: flex;
+    gap: 20px;
+    border: var(--borderthickness) solid var(--accent);
+}
