@@ -71,6 +71,7 @@ body {
     background: none;
     color: var(--textAccent);
     text-decoration: none;
+    white-space: nowrap;
     /* margin-top: var(--innermargin); */
     /* margin-bottom: var(--innermargin); */
 }
@@ -109,12 +110,12 @@ body {
 }
 
 #map {
-    min-width: 400px;
+    /* min-width: 400px; */
     flex-grow: 2;
 }
 
 #barcontainer {
-    min-width: 400px;
+    min-width: 300px;
     flex-grow: 1;
     padding-right: 50px;
     padding-left: 10px;
@@ -237,4 +238,44 @@ body {
     display: flex;
     gap: 20px;
     border: var(--borderthickness) solid var(--accent);
+}
+
+
+@media only screen and (max-width: 940px) {
+    .appPage {
+        overflow-y:inherit;
+        height: auto;
+    }
+    .controlbar {
+        flex-direction: column;
+        max-height: none;
+        height: auto;
+        gap: 0px;
+        /* padding-bottom: 30px; */
+    }
+    .infobar {
+        margin-left: 12px;
+        flex-wrap: wrap;
+        /* gap: 45px; */
+        /* justify-content: space-between; */
+    }
+    .infobarItem {
+        flex-grow: 10;
+        height: 50px;
+        font-size: 24px;
+    }
+    .dropdowns {
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+    
+
+    .graphs {
+        flex-direction: column;
+    }
+
+    .graphs > div {
+        min-height: 400px;
+        max-height: 70vh;
+    }
 }
