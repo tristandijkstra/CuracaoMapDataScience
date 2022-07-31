@@ -369,5 +369,5 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
     return fig, barFinal, barclass, "displayNone"
 
 
-if __name__ == "__main__":
-    app.run_server(debug=True, port=8000)
+# if __name__ == "__main__":
+#     app.run_server(debug=True, port=8000)
