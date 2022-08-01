@@ -20,7 +20,7 @@ from dash import (
     page_container
 )
 
-# from electionlayout import mainApp, topLayer
+from pages.electionlayout import mainlayout
 
 from sklearn import cluster
 
@@ -97,7 +97,15 @@ external_scripts = [
 flapp = flask.Flask(__name__)
 app = Dash(__name__, server=flapp, external_scripts=external_scripts, use_pages=True)
 # Layout
-app.layout = html.Div(id="fullapp", children=[page_container])
+
+topLayer = html.Div(
+    id="toplayer",
+    children=[
+        html.Div(id="fullscreenloader", children=["Loading Election Map"]),
+    ],
+)
+
+app.layout = html.Div(id="fullapp", children=[topLayer, page_container, mainlayout])
 
 @app.callback(
     [
@@ -369,5 +377,5 @@ def update_graph(clustersDD, yearDD, NumberStyleDD, comparativeCL, mapclicks):
     return fig, barFinal, barclass, "displayNone"
 
 
-# if __name__ == "__main__":
-#     app.run_server(debug=True, port=8000)
+if __name__ == "__main__":
+    app.run_server(debug=True, port=8000)

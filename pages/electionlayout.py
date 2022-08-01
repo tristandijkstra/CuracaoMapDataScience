@@ -6,18 +6,7 @@ from dash import (
 )
 from datetime import datetime
 
-register_page(__name__, path='/')
-
-
-topLayer = html.Div(
-    id="toplayer",
-    children=[
-        html.Div(id="fullscreenloader", children=["Loading Election Map"]),
-    ],
-)
-
-
-mainApp = html.Div(
+mainlayout = html.Div(
     className="appPage",
     children=[
         html.Div(
@@ -154,5 +143,3 @@ mainApp = html.Div(
         html.Div(f"© {datetime.now().year} Tristan Dijkstra", className="copyrightbar")
     ],
 )
-
-layout = html.Div(id="fullapp", children=[topLayer, mainApp])
