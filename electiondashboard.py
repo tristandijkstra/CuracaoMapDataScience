@@ -1,4 +1,3 @@
-from pydoc import classname
 from OSMPythonTools.nominatim import Nominatim
 import pandas as pd
 import shapely

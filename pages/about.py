@@ -1,5 +1,3 @@
-import email
-from pydoc import classname
 from dash import dcc, html, register_page
 
 
